@@ -1,5 +1,4 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-import mediapipe as mp
 import cv2
 import numpy as np
 import tempfile
@@ -9,10 +8,15 @@ from app.models.schemas import LivenessCheckResponse
 
 router = APIRouter()
 
-mp_face_mesh = mp.solutions.face_mesh
 try:
-    face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True, max_num_faces=1, refine_landmarks=True)
-except:
+    import mediapipe as mp
+
+    mp_face_mesh = mp.solutions.face_mesh
+    face_mesh = mp_face_mesh.FaceMesh(
+        static_image_mode=True, max_num_faces=1, refine_landmarks=True
+    )
+except Exception:
+    mp_face_mesh = None
     face_mesh = None
 
 def calculate_ear(landmarks, eye_indices):

@@ -1,5 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from fer import FER
+try:
+    from fer.fer import FER
+except ImportError:
+    from fer import FER
 from app.models.schemas import EmotionDetectionResponse
 import shutil
 import tempfile
