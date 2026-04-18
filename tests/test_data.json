@@ -1,0 +1,375 @@
+{
+  "test_profiles": [
+    {
+      "id": "TC001",
+      "scenario": "Ideal Applicant - Low Risk Approval",
+      "input": {
+        "transcript": "My name is Rahul Sharma. I work as a software engineer at Infosys. My monthly income is 150000 rupees. I need a home renovation loan. I give my full consent to process this application.",
+        "declared_age": 32,
+        "bureau_score": 780,
+        "risk_score": 0.2
+      },
+      "expected_output": {
+        "classify": {
+          "income": 150000,
+          "job": "Software Engineer",
+          "purpose": "Home Renovation",
+          "consent": true,
+          "language_detected": "English"
+        },
+        "estimate_age": { "estimated_age": 31, "match": true },
+        "detect_emotion": { "emotion": "neutral", "stress_score": 0.1 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "loan_amount": 1000000,
+          "interest_rate": 8.0,
+          "emi": 31336,
+          "risk_category": "Low",
+          "decision": "Approved"
+        }
+      }
+    },
+    {
+      "id": "TC002",
+      "scenario": "Hindi Speaker - Hinglish Transcript",
+      "input": {
+        "transcript": "Mera naam Priya Verma hai. Main ek teacher hoon government school mein. Mera monthly income 1.5 lakh hai. Mujhe apni beti ki shaadi ke liye loan chahiye. Haan, main consent deti hoon.",
+        "declared_age": 42,
+        "bureau_score": 710,
+        "risk_score": 0.35
+      },
+      "expected_output": {
+        "classify": {
+          "income": 150000,
+          "job": "Government Teacher",
+          "purpose": "Wedding / Personal",
+          "consent": true,
+          "language_detected": "Hindi"
+        },
+        "estimate_age": { "estimated_age": 40, "match": true },
+        "detect_emotion": { "emotion": "happy", "stress_score": 0.2 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "loan_amount": 500000,
+          "interest_rate": 9.5,
+          "emi": 15990,
+          "risk_category": "Standard",
+          "decision": "Approved"
+        }
+      }
+    },
+    {
+      "id": "TC003",
+      "scenario": "Age Mismatch - Fraud Flag",
+      "input": {
+        "transcript": "My name is Amit Patel. I am a business owner. Monthly income around 80000. Need a business expansion loan. I consent.",
+        "declared_age": 28,
+        "bureau_score": 690,
+        "risk_score": 0.55
+      },
+      "expected_output": {
+        "classify": {
+          "income": 80000,
+          "job": "Business Owner",
+          "purpose": "Business Expansion",
+          "consent": true,
+          "language_detected": "English"
+        },
+        "estimate_age": {
+          "estimated_age": 45,
+          "match": false,
+          "flag": "Age discrepancy exceeds 5 year threshold - manual review required"
+        },
+        "detect_emotion": { "emotion": "fear", "stress_score": 0.72 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "loan_amount": 300000,
+          "interest_rate": 12.0,
+          "emi": 9963,
+          "risk_category": "High",
+          "decision": "Manual Review"
+        }
+      }
+    },
+    {
+      "id": "TC004",
+      "scenario": "Liveness Check Fail - Photo Attack",
+      "input": {
+        "transcript": "I am Sneha Joshi. I work at a private company. Income is 60000 per month. I want a personal loan. Yes I consent.",
+        "declared_age": 27,
+        "bureau_score": 720,
+        "risk_score": 0.3
+      },
+      "expected_output": {
+        "classify": {
+          "income": 60000,
+          "job": "Private Sector Employee",
+          "purpose": "Personal Loan",
+          "consent": true,
+          "language_detected": "English"
+        },
+        "estimate_age": { "estimated_age": 26, "match": true },
+        "detect_emotion": { "emotion": "neutral", "stress_score": 0.15 },
+        "liveness_check": {
+          "is_live": false,
+          "blink_detected": false,
+          "head_pose": "static",
+          "flag": "Liveness check failed - possible photo replay attack"
+        },
+        "generate_offer": {
+          "decision": "Rejected",
+          "reason": "Liveness verification failed"
+        }
+      }
+    },
+    {
+      "id": "TC005",
+      "scenario": "Low Bureau Score - High Risk",
+      "input": {
+        "transcript": "Mera naam Ravi Kumar hai. Main construction mein kaam karta hoon. Mahine ka 40000 kamaata hoon. Mujhe medical emergency ke liye loan chahiye. Haan consent hai.",
+        "declared_age": 38,
+        "bureau_score": 580,
+        "risk_score": 0.8
+      },
+      "expected_output": {
+        "classify": {
+          "income": 40000,
+          "job": "Construction Worker",
+          "purpose": "Medical Emergency",
+          "consent": true,
+          "language_detected": "Hindi"
+        },
+        "estimate_age": { "estimated_age": 39, "match": true },
+        "detect_emotion": { "emotion": "sadness", "stress_score": 0.85 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "loan_amount": 100000,
+          "interest_rate": 14.0,
+          "emi": 3416,
+          "risk_category": "High",
+          "decision": "Conditional Approval"
+        }
+      }
+    },
+    {
+      "id": "TC006",
+      "scenario": "No Consent Given - Auto Reject",
+      "input": {
+        "transcript": "My name is Deepa Nair. I am a nurse. My salary is 55000 per month. I need a vehicle loan. I do not want my data to be processed or shared.",
+        "declared_age": 31,
+        "bureau_score": 740,
+        "risk_score": 0.25
+      },
+      "expected_output": {
+        "classify": {
+          "income": 55000,
+          "job": "Nurse",
+          "purpose": "Vehicle Loan",
+          "consent": false,
+          "language_detected": "English"
+        },
+        "estimate_age": { "estimated_age": 30, "match": true },
+        "detect_emotion": { "emotion": "neutral", "stress_score": 0.2 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "decision": "Rejected",
+          "reason": "Explicit consent not provided - cannot process application"
+        }
+      }
+    },
+    {
+      "id": "TC007",
+      "scenario": "High Stress Score - Fraud Review",
+      "input": {
+        "transcript": "My name is Vikram Singh. I run a trading business. Income is around 200000 monthly. Need a loan for business. Yes I consent.",
+        "declared_age": 45,
+        "bureau_score": 650,
+        "risk_score": 0.6
+      },
+      "expected_output": {
+        "classify": {
+          "income": 200000,
+          "job": "Trader / Business Owner",
+          "purpose": "Business Loan",
+          "consent": true,
+          "language_detected": "English"
+        },
+        "estimate_age": { "estimated_age": 46, "match": true },
+        "detect_emotion": {
+          "emotion": "anger",
+          "stress_score": 0.91,
+          "flag": "High stress detected - flagged for fraud review"
+        },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "left" },
+        "generate_offer": {
+          "loan_amount": 500000,
+          "interest_rate": 12.5,
+          "emi": 16779,
+          "risk_category": "High",
+          "decision": "Manual Review"
+        }
+      }
+    },
+    {
+      "id": "TC008",
+      "scenario": "Senior Citizen - Edge Case Age",
+      "input": {
+        "transcript": "My name is Suresh Iyer. I am a retired government officer. I get a pension of 45000 per month. I need a medical loan for my wife's treatment. I consent to all terms.",
+        "declared_age": 63,
+        "bureau_score": 760,
+        "risk_score": 0.3
+      },
+      "expected_output": {
+        "classify": {
+          "income": 45000,
+          "job": "Retired Government Officer",
+          "purpose": "Medical Loan",
+          "consent": true,
+          "language_detected": "English"
+        },
+        "estimate_age": { "estimated_age": 65, "match": true },
+        "detect_emotion": { "emotion": "neutral", "stress_score": 0.3 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "loan_amount": 200000,
+          "interest_rate": 9.0,
+          "emi": 6362,
+          "risk_category": "Standard",
+          "decision": "Approved"
+        }
+      }
+    },
+    {
+      "id": "TC009",
+      "scenario": "Groq Failover Test - Gemini Fallback",
+      "input": {
+        "transcript": "Namaste, mera naam Anjali Gupta hai. Main ek private company mein HR manager hoon. Meri salary 90000 rupaye hai. Mujhe ghar kharidne ke liye loan chahiye. Main poori tarah se consent karti hoon.",
+        "declared_age": 35,
+        "bureau_score": 730,
+        "risk_score": 0.28,
+        "simulate_groq_failure": true
+      },
+      "expected_output": {
+        "classify": {
+          "income": 90000,
+          "job": "HR Manager",
+          "purpose": "Home Purchase",
+          "consent": true,
+          "language_detected": "Hindi",
+          "api_used": "Gemini (Groq fallback triggered)"
+        },
+        "estimate_age": { "estimated_age": 34, "match": true },
+        "detect_emotion": { "emotion": "neutral", "stress_score": 0.18 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "loan_amount": 700000,
+          "interest_rate": 9.0,
+          "emi": 22267,
+          "risk_category": "Standard",
+          "decision": "Approved"
+        }
+      }
+    },
+    {
+      "id": "TC010",
+      "scenario": "Complete Pipeline Stress Test - All Systems",
+      "input": {
+        "transcript": "Hi, I'm Meera Krishnan. I am a freelance graphic designer. My monthly earnings vary but average around 70000 rupees. I am looking for an education loan for my son. I agree and provide my full consent.",
+        "declared_age": 44,
+        "bureau_score": 695,
+        "risk_score": 0.45
+      },
+      "expected_output": {
+        "classify": {
+          "income": 70000,
+          "job": "Freelance Graphic Designer",
+          "purpose": "Education Loan",
+          "consent": true,
+          "language_detected": "English"
+        },
+        "estimate_age": { "estimated_age": 43, "match": true },
+        "detect_emotion": { "emotion": "neutral", "stress_score": 0.25 },
+        "liveness_check": { "is_live": true, "blink_detected": true, "head_pose": "straight" },
+        "generate_offer": {
+          "loan_amount": 400000,
+          "interest_rate": 10.5,
+          "emi": 12959,
+          "risk_category": "Standard",
+          "decision": "Approved"
+        }
+      }
+    },
+    {
+      "id": "TC011",
+      "scenario": "Video Intelligence - Script Reading / Coaching Fraud Detected",
+      "description": "Applicant is visibly reading from an off-screen script. A second person is coaching them from outside the frame.",
+      "input": {
+        "video_file": "tc011_coached_applicant.mp4",
+        "transcript": "My name is Arjun Mehta. I work as a senior manager. My income is 200000 per month. I need a home loan. I consent.",
+        "declared_age": 40,
+        "bureau_score": 720,
+        "risk_score": 0.4
+      },
+      "expected_output": {
+        "video_intelligence": {
+          "fraud_detected": true,
+          "fraud_type": "Coached Application",
+          "flags": [
+            "Applicant eyes deviate repeatedly to off-screen location",
+            "Lip movement inconsistent with natural speech cadence",
+            "Second person shadow detected at frame edge",
+            "Behavioral pattern matches script-reading profile"
+          ],
+          "lip_sync_match": false,
+          "scene_summary": "Applicant appears to be reading from an external script. Environmental analysis detected a secondary presence outside the camera frame, suggesting coaching activity. Application flagged for manual fraud review.",
+          "confidence_score": 0.89,
+          "decision": "Flagged - Manual Review Required"
+        }
+      }
+    },
+    {
+      "id": "TC012",
+      "scenario": "Video Intelligence - Clean Authentic Application",
+      "description": "Genuine applicant speaking naturally with no fraud signals. Environment is professional and clean.",
+      "input": {
+        "video_file": "tc012_genuine_applicant.mp4",
+        "transcript": "Hi, my name is Sunita Rao. I am a doctor working at Apollo Hospital. My monthly income is 180000 rupees. I want a loan for home renovation. I fully consent to this process.",
+        "declared_age": 38,
+        "bureau_score": 775,
+        "risk_score": 0.18
+      },
+      "expected_output": {
+        "video_intelligence": {
+          "fraud_detected": false,
+          "fraud_type": null,
+          "flags": [],
+          "lip_sync_match": true,
+          "scene_summary": "Applicant is speaking naturally and directly to the camera with consistent eye contact. No secondary persons or environmental red flags detected. Professional indoor setting with stable lighting. Application behavior is consistent with genuine interview conduct.",
+          "confidence_score": 0.96,
+          "decision": "Clear - Proceed to Offer Engine"
+        },
+        "generate_offer": {
+          "loan_amount": 900000,
+          "interest_rate": 8.0,
+          "emi": 28202,
+          "risk_category": "Low",
+          "decision": "Approved"
+        }
+      }
+    }
+  ],
+  "edge_case_summary": {
+    "TC001": "Ideal approval path",
+    "TC002": "Hindi/Hinglish language extraction",
+    "TC003": "Age mismatch fraud flag",
+    "TC004": "Liveness fail / photo attack",
+    "TC005": "Low bureau score / high risk",
+    "TC006": "No consent auto-reject",
+    "TC007": "High stress fraud review",
+    "TC008": "Senior citizen edge case",
+    "TC009": "Groq API failure / Gemini fallback",
+    "TC010": "Full pipeline stress test",
+    "TC011": "Video intelligence - coaching/script fraud detected",
+    "TC012": "Video intelligence - clean authentic application"
+  }
+}
